@@ -1,6 +1,7 @@
 #Sᴜɴʀɪsᴇs Hᴀʀsʜᴀ 𝟸𝟺 🇮🇳 ᵀᴱᴸ
 #ALL FILES UPLOADED - CREDITS 🌟 - @Sunrises_24
-                           
+ from pyrogram.types import (InlineKeyboardButton,  InlineKeyboardMarkup)
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery                          
 import base64
 import hashlib
 from time import sleep
@@ -9,6 +10,27 @@ from config import REMIKEY
 import aiofiles
 import asyncio 
 
+app = Client(
+    "image_editor_bot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
+)
+
+# Function to handle /start command
+@app.on_message(filters.command("start"))
+async def start(client, message):
+    await message.reply_text(
+        f"Hello {message.from_user.first_name}❤️ Welcome! Send me an image and choose an action",reply_to_message_id = message.id ,  reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("𝐔𝐏𝐃𝐀𝐓𝐄𝐒 📢" ,url=f"https://t.me/Sunrises24BotUpdates") ],
+                    [
+                    InlineKeyboardButton("𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑 🧑🏻‍💻" ,url="https://t.me/Sunrises_24") ],
+                    [
+                    InlineKeyboardButton("𝐂𝐇𝐀𝐍𝐍𝐄𝐋 🎞️" ,url="https://t.me/sunriseseditsoffical6") ]                               
+            ]))
+  
  print("Bot Started!💎 © t.me/Sunrises_24")
 
 class ImageCreator: 
@@ -99,11 +121,5 @@ class ImageCreator:
             return False 
 
 
-
-
-
-
-
-if __name__ == '__main__':
-    res = ImageCreator()
-    asyncio.run(res.main('image.jpg'))
+# Run the bot
+app.run()
