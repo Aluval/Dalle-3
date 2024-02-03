@@ -1,4 +1,4 @@
-
+aiofiles
 beautifulsoup4
 bs4
 urllib3
@@ -11,3 +11,4 @@ libcst
 ujson
 dnspython
 jsons
+asyncio 
