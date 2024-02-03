@@ -4,7 +4,7 @@ pyrate_limiter
 pyrogram
 psutil
 tgcrypto
-base64
+bs4
 json
 python-telegram-bot
 requests
