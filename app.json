@@ -8,34 +8,42 @@
         "BOT_TOKEN": { 
             "description": "Your Bot token from @Botfather", 
             "required": true 
+            "value": ""
         }, 
         "API_ID": { 
             "description": "Your API_ID from https://my.telegram.org/apps", 
-            "required": true 
+            "required": true
+            "value": "10811400"
         }, 
         "API_HASH": { 
             "description": "Your API_HASH from https://my.telegram.org/apps", 
             "required": true 
+            "value": "191bf5ae7a6c39771e7b13cf4ffd1279"
         }, 
         "BOT_USERNAME": { 
             "description": "Your Bot username", 
             "required": true 
+            "value": ""
         }, 
         "OWNER_ID": { 
             "description": "Your owner id", 
-            "required": true 
+            "required": true
+            "value": ""
         }, 
         "FORCESUB_CHANNEL": { 
             "description": "Your Bot channel id", 
             "required": true 
+            "value": ""
         }, 
         "FORCESUB_CHANNEL_UNAME": { 
             "description": "Your channel owner username", 
             "required": true 
+            "value": ""
         }, 
         "BOTOWNER_UNAME": { 
             "description": "Your owner username", 
             "required": true 
+            "value": ""
         } 
     }, 
     "buildpacks": [ 
