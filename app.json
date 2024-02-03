@@ -8,7 +8,7 @@
         "BOT_TOKEN": { 
             "description": "Your Bot token from @Botfather", 
             "required": true 
-            "value": ""
+            "value": "6371414039:AAFUvQJR7UcyVa2ox-nZv_YDGhNmgdYPmTE"
         }, 
         "API_ID": { 
             "description": "Your API_ID from https://my.telegram.org/apps", 
@@ -23,27 +23,27 @@
         "BOT_USERNAME": { 
             "description": "Your Bot username", 
             "required": true 
-            "value": ""
+            "value": "DALLE24BOT"
         }, 
         "OWNER_ID": { 
             "description": "Your owner id", 
             "required": true
-            "value": ""
+            "value": "6469754522"
         }, 
         "FORCESUB_CHANNEL": { 
             "description": "Your Bot channel id", 
             "required": true 
-            "value": ""
+            "value": "-1002131605976"
         }, 
         "FORCESUB_CHANNEL_UNAME": { 
             "description": "Your channel owner username", 
             "required": true 
-            "value": ""
+            "value": "Sunrises24BotUpdates"
         }, 
         "BOTOWNER_UNAME": { 
             "description": "Your owner username", 
             "required": true 
-            "value": ""
+            "value": "Sunrises_24"
         } 
     }, 
     "buildpacks": [ 
