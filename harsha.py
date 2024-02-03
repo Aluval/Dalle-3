@@ -28,19 +28,25 @@ app = Client(
 
 print("Bot Started!💎 © t.me/Sunrises_24")
                            
-@app.on_message(filters.command("start"))
-async def start(client, message):
-    await message.reply_text(
-        f"Hello {message.from_user.first_name}❤️ Welcome! Send me an text",reply_to_message_id = message.id ,  reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("𝐔𝐏𝐃𝐀𝐓𝐄𝐒 📢" ,url=f"https://t.me/Sunrises24BotUpdates") ],
-                    [
-                    InlineKeyboardButton("𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑 🧑🏻‍💻" ,url="https://t.me/Sunrises_24") ],
-                    [
-                    InlineKeyboardButton("𝐂𝐇𝐀𝐍𝐍𝐄𝐋 🎞️" ,url="https://t.me/sunriseseditsoffical6") ]                               
-            ]))
-    
+@app.on_message(filters.command(["start"]))
+def start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+	app.send_message(message.chat.id,"Hi I am Dalle-Mini Bot, i can send request to https://www.craiyon.com/ with text prompt describing image and get you the results here\n\nUse /dalle command with the text prompt")
+
+# dalle command
+@app.on_message(filters.command(["dalle"]))
+def getpompt(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+
+	# getting prompt from the text
+	try:
+		prompt = message.text.split("/dalle ")[1]
+	except:
+		app.send_message(message.chat.id,'Send Prompt with Command,\nUssage : "/dalle high defination studio image of pokemon"')
+		return	
+
+	# threding	
+	app.send_message(message.chat.id,"Prompt received and Request is sent. Waiting time is 2-3 mins")
+	ai = threading.Thread(target=lambda:genrateimages(message,prompt),daemon=True)
+	ai.start()
 
 # request data
 reqUrl = "https://backend.craiyon.com/generate"
@@ -84,25 +90,6 @@ def genrateimages(message,prompt):
 	os.remove(f"{prompt}.zip")
 	shutil.rmtree(str(message.id))
 
-@app.on_message(filters.command(["start"]))
-def start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-	app.send_message(message.chat.id,"Hi I am Dalle-Mini Bot, i can send request to https://www.craiyon.com/ with text prompt describing image and get you the results here\n\nUse /dalle command with the text prompt")
-
-# dalle command
-@app.on_message(filters.command(["dalle"]))
-def getpompt(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-
-	# getting prompt from the text
-	try:
-		prompt = message.text.split("/dalle ")[1]
-	except:
-		app.send_message(message.chat.id,'Send Prompt with Command,\nUssage : "/dalle high defination studio image of pokemon"')
-		return	
-
-	# threding	
-	app.send_message(message.chat.id,"Prompt received and Request is sent. Waiting time is 2-3 mins")
-	ai = threading.Thread(target=lambda:genrateimages(message,prompt),daemon=True)
-	ai.start()
 
 # Run the bot
 app.run()
