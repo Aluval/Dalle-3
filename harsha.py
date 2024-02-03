@@ -4,6 +4,7 @@ from pyrogram.types import (InlineKeyboardButton,  InlineKeyboardMarkup)
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery                          
 import base64
 import hashlib
+from pyrogram import Client, filters
 from time import sleep
 import httpx
 from config import REMIKEY
