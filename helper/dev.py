@@ -6,8 +6,8 @@ from pyrogram import Client
 from pyrogram.types import CallbackQuery, Message
 
 
-from bot.config import *
-from bot.helpers.ratelimiter import RateLimiter
+from config import *
+from helper.ratelimiter import RateLimiter
 
 ratelimiter = RateLimiter()
 
