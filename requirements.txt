@@ -1,0 +1,8 @@
+pyrate_limiter
+pyrogram
+psutil
+tgcrypto
+base64
+json
+python-telegram-bot
+requests
