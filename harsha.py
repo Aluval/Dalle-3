@@ -9,7 +9,7 @@ from config import *
 from pyrogram.types import *
 from pyrogram.types import InputMediaPhoto, Message
 #from bot.helper import ratelimit, user_commands
-from .helper.functions import forcesub
+from helper.functions import forcesub
 
 commands = ["dalle", f"dalle@{BOT_USERNAME}"]
 
