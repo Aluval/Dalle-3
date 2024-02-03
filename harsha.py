@@ -40,7 +40,7 @@ async def start(client, message):
                     InlineKeyboardButton("𝐂𝐇𝐀𝐍𝐍𝐄𝐋 🎞️" ,url="https://t.me/sunriseseditsoffical6") ]                               
             ]))
     
-@app.on_message(filters.command(dalle))
+@app.on_message(filters.command("dalle"))
 async def dalle(client, message: Message):
     """
     DALL·E Mini - Generate images from a text prompt
