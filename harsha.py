@@ -57,17 +57,32 @@ headersList = {"authority": "backend.craiyon.com", "accept": "application/json",
 def genrateimages(message,prompt):
 
 	# getting the response
-	payload = json.dumps({"prompt": prompt})
-	response = requests.request("POST", reqUrl, data=payload, headers=headersList).json()
-	os.mkdir(str(message.id))
+	import json
 
-	# decoding base64 to image
-	i = 1
-	for ele in response["images"]:
-		image = base64.b64decode(ele.replace('\\n',''))
-		with open(f"{message.id}/{i}.jpeg","wb") as file:
-			file.write(image)
-		i = i + 1 
+payload = json.dumps({"prompt": prompt})
+
+try:
+    response = requests.post(reqUrl, data=payload, headers=headersList)
+    response.raise_for_status()  # Check for HTTP errors
+
+    try:
+        json_data = response.json()       
+        os.mkdir(str(message.id))
+
+        i = 1
+        for ele in json_data.get("images", []):
+            image = base64.b64decode(ele.replace('\\n', ''))
+            with open(f"{message.id}/{i}.jpeg", "wb") as file:
+                file.write(image)
+            i += 1
+
+    except json.JSONDecodeError as e:
+        print(f"JSON decoding error: {e}")
+        
+except requests.exceptions.RequestException as e:
+    print(f"Request error: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 	
 	# sending images
 	app.send_media_group(message.chat.id,
