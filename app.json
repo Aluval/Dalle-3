@@ -1,0 +1,46 @@
+{ 
+    "name": "Dalle-3💎", 
+    "description": "This Bot Can Do Photo Edit",
+    "logo": "https://telegra.ph/file/1f50920902356e34e38f6.jpg",
+    "repository": "https://github.com/Aluval/PhotoEnhancer24Bot", 
+    "keywords": ["Photo","Edit","Song","telegram bot"], 
+    "env": { 
+        "BOT_TOKEN": { 
+            "description": "Your Bot token from @Botfather", 
+            "required": true 
+        }, 
+        "API_ID": { 
+            "description": "Your API_ID from https://my.telegram.org/apps", 
+            "required": true 
+        }, 
+        "API_HASH": { 
+            "description": "Your API_HASH from https://my.telegram.org/apps", 
+            "required": true 
+        }, 
+        "BOT_USERNAME": { 
+            "description": "Your Bot username", 
+            "required": true 
+        }, 
+        "OWNER_ID": { 
+            "description": "Your owner id", 
+            "required": true 
+        }, 
+        "FORCESUB_CHANNEL": { 
+            "description": "Your Bot channel id", 
+            "required": true 
+        }, 
+        "FORCESUB_CHANNEL_UNAME": { 
+            "description": "Your channel owner username", 
+            "required": true 
+        }, 
+        "BOTOWNER_UNAME": { 
+            "description": "Your owner username", 
+            "required": true 
+        } 
+    }, 
+    "buildpacks": [ 
+        { 
+            "url": "heroku/python" 
+        } 
+    ] 
+}
