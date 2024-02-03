@@ -1,77 +1,109 @@
 #Sᴜɴʀɪsᴇs Hᴀʀsʜᴀ 𝟸𝟺 🇮🇳 ᵀᴱᴸ
-import sqlite3
-import openai
-import requests
-import telegram
-from telegram import Update
-from telegram.ext import CommandHandler, MessageHandler, filters, Updater, CallbackContext
 #ALL FILES UPLOADED - CREDITS 🌟 - @Sunrises_24
-
-print("Bot Started!💎 © t.me/Sunrises_24")
                            
+import base64
+import hashlib
+from time import sleep
+import httpx
+from config import REMIKEY
+import aiofiles
+import asyncio 
 
-# Set up OpenAI API
-openai.api_key = "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"
+ print("Bot Started!💎 © t.me/Sunrises_24")
 
-# Set up Telegram bot
-bot = telegram.Bot(token="6371414039:AAFUvQJR7UcyVa2ox-nZv_YDGhNmgdYPmTE")
-updater = Updater(bot=bot, use_context=True)
-dispatcher = updater.dispatcher
+class ImageCreator: 
+    def __init__ (self):
+        self.api_key =  REMIKEY
+        self.content_type = "image/jpeg"
+        self.output_content_type = "image/jpeg"
+        self._timeout = 60
+        self._base_url = "https://developer.remini.ai/api"
 
-#When /start send Hello! How can I help you?
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Hello! How can I help you?")
+    @staticmethod
+    def _get_image_md5_content(telegram_id) -> tuple[str, bytes]:
+        with open(f'{telegram_id}.jpg', "rb") as fp:
+            content = fp.read()
+            image_md5 = base64.b64encode(hashlib.md5(content).digest()).decode("utf-8")
+        return image_md5, content
 
-#Generate text or code
-def generate_text(update, context):
-    # Get user input
-    prompt = update.message.text
+    async def _generate(self, telegram_id : int, face_mode : str, back_mode : str, color_mode : str):
+        try:
 
-    # Generate text with OpenAI's GPT-3 model
-    completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
 
-    # Send generated text back to user
-    text = completions.choices[0].text
-    context.bot.send_message(chat_id=update.effective_chat.id, text=text)
+            if color_mode == 'none':
+                tools = [
+                            {"type": "face_enhance", "mode": face_mode},
+                            {"type": "background_enhance", "mode": back_mode},
+                        ]
 
-#Generate image
-def generate_image(update, context):
-    # Get user input
-    prompt = update.message.text
+            else:
+                tools = [
+                            {"type": "face_enhance", "mode": face_mode},
+                            {"type": "background_enhance", "mode": back_mode},
+                            {"type":"color_enhance","mode": color_mode},
+                        ]
 
-    # Generate image with OpenAI's DALL-E model
-    url = "https://api.openai.com/v1/images/generations"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {openai.api_key}",
-    }
-    data = {
-        "model": "image-alpha-001",
-        "prompt": prompt,
-        "num_images": 4,
-        "size": "1024x1024",
-        "response_format": "url",
-    }
-    response = requests.post(url, headers=headers, json=data)
 
-    # Send generated image back to user
-    image_url = response.json()["data"][0]["url"]
-    context.bot.send_photo(chat_id=update.effective_chat.id, photo=image_url)
+            image_md5, content = self._get_image_md5_content(telegram_id)
+            # Setup an HTTP client with the correct options
+            async with httpx.AsyncClient(
+                base_url=self._base_url, headers={"Authorization": f"Bearer {self.api_key}"}
+            ) as client:
+                # Submit the task
+                response = await client.post(
+                    "/tasks",
+                    json={
+                        "tools": tools,
+                        "image_md5": image_md5,
+                        "image_content_type": self.content_type,
+                        "output_content_type": self.output_content_type,
+                    },
+                )
+                assert response.status_code == 200
+                body = response.json()
+                task_id = body["task_id"]
 
-# Set up message handlers
-start_handler = CommandHandler('start', start)
-dalle_handler = CommandHandler("dalle", generate_image)
-text_handler = CommandHandler("chat", generate_text)
-dispatcher.add_handler(start_handler)
-dispatcher.add_handler(dalle_handler)
-dispatcher.add_handler(text_handler)
+                # Upload the image
+                response =  httpx.put(
+                    body["upload_url"],
+                    headers=body["upload_headers"],
+                    content=content,
+                    timeout=self._timeout,
+                )
+                assert response.status_code == 200
 
-# Start the bot
-updater.start_polling()
+                # Process the image
+                response = await client.post(f"/tasks/{task_id}/process")
+                assert response.status_code == 202
+
+                # Get the image
+                for i in range(50):
+                    response = await client.get(f"/tasks/{task_id}")
+                    assert response.status_code == 200
+
+                    if response.json()["status"] == "completed":
+                        break
+                    else:
+                        await asyncio.sleep(2)
+
+                # Print the output URL to download the enhanced image
+                print(response.json()["result"]["output_url"])
+                image_url = response.json()["result"]["output_url"]
+                async with httpx.AsyncClient() as client:
+                    image = await client.get(image_url)
+                    async with aiofiles.open(f'{telegram_id}.jpg', 'wb') as file:
+                        await file.write(image.content)
+                    return f'{telegram_id}.jpg'
+        except AssertionError as ex:
+            print(ex)
+            return False 
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    res = ImageCreator()
+    asyncio.run(res.main('image.jpg'))
