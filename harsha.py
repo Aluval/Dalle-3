@@ -4,7 +4,7 @@ import openai
 import requests
 import telegram
 from telegram import Update
-from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackContext
+from telegram.ext import CommandHandler, MessageHandler, filters, Updater, CallbackContext
 #ALL FILES UPLOADED - CREDITS 🌟 - @Sunrises_24
 
 print("Bot Started!💎 © t.me/Sunrises_24")
