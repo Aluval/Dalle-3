@@ -59,7 +59,7 @@ async def dalle(client, message: Message):
     try:
         await generateimages(client, message, query)
 except Exception as e:
-    error_message = f"<b>Error encountered while generating Image from DALLE-Mini:</b> {str(e)}"
+        error_message = f"<b>Error encountered while generating Image from DALLE-Mini:</b> {str(e)}"
         await message.reply_text(text=error_message, disable_web_page_preview=True, quote=True)
         return
 
