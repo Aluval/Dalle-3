@@ -13,7 +13,7 @@ from bot.helper.functions import forcesub
 commands = ["dalle", f"dalle@{BOT_USERNAME}"]
 
 
-@app.on_message(filters.command(dalle)
+@app.on_message(filters.command(dalle))
 async def dalle(client, message: Message):
     """
     DALL·E Mini - Generate images from a text prompt
