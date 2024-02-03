@@ -4,6 +4,8 @@ import json
 import os
 import shutil
 import requests
+from pyrogram.types import (InlineKeyboardButton,  InlineKeyboardMarkup)
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram import Client, filters
 from config import *
 from pyrogram.types import *
