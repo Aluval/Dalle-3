@@ -31,7 +31,7 @@ async def start(client, message):
                     InlineKeyboardButton("𝐂𝐇𝐀𝐍𝐍𝐄𝐋 🎞️" ,url="https://t.me/sunriseseditsoffical6") ]                               
             ]))
   
- print("Bot Started!💎 © t.me/Sunrises_24")
+print("Bot Started!💎 © t.me/Sunrises_24")
 
 class ImageCreator: 
     def __init__ (self):
