@@ -1,11 +1,6 @@
-
-beautifulsoup4
-pyrate_limiter
+openai
 pyrogram
-psutil
 tgcrypto
-bs4
-urllib3
 python-telegram-bot
 requests
 httpx
