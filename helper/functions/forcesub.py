@@ -7,7 +7,7 @@ from pyrogram.enums import ChatMemberStatus, ChatType, ParseMode
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from bot.config import *
+from config import *
 
 async def forcesub(client, message: Message) -> bool:
     """
