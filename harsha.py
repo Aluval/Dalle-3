@@ -45,12 +45,7 @@ async def dalle(client, message: Message):
     """
     DALL·E Mini - Generate images from a text prompt
     """
-    global query
-
-    fsub = await forcesub(client, message)
-    if not fsub:
-        return
-
+    global query   
     reply_to = message.reply_to_message
 
     if len(message.command) > 1:
