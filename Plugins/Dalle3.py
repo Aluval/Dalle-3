@@ -7,8 +7,8 @@ from pyrogram import Client, filters
 from pyrogram.types import InputMediaPhoto, Message
 
 from bot.config import *
-from bot.helpers.decorators import ratelimit, user_commands
-from bot.helpers.functions import forcesub
+from bot.helper import ratelimit, user_commands
+from bot.helper.functions import forcesub
 
 commands = ["dalle", f"dalle@{BOT_USERNAME}"]
 
