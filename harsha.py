@@ -1,110 +1,77 @@
 #Sᴜɴʀɪsᴇs Hᴀʀsʜᴀ 𝟸𝟺 🇮🇳 ᵀᴱᴸ
-import base64
-import json
-import os
-import shutil
-import threading
+import sqlite3
+import openai
 import requests
-from pyrogram.types import (InlineKeyboardButton,  InlineKeyboardMarkup)
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from pyrogram import Client, filters
-from config import *
-from pyrogram.types import *
-from pyrogram.types import InputMediaPhoto, Message
-#from bot.helper import ratelimit, user_commands
-from helper.functions import forcesub
-
-commands = ["dalle", f"dalle@{BOT_USERNAME}"]
-
+import telegram
+from telegram import Update
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackContext
 #ALL FILES UPLOADED - CREDITS 🌟 - @Sunrises_24
-
-# Initialize the Pyrogram client
-app = Client(
-    "DalleMini24",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN
-)
 
 print("Bot Started!💎 © t.me/Sunrises_24")
                            
-@app.on_message(filters.command(["start"]))
-def start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-	app.send_message(message.chat.id,"Hi I am Dalle-Mini Bot, i can send request to https://www.craiyon.com/ with text prompt describing image and get you the results here\n\nUse /dalle command with the text prompt")
 
-# dalle command
-@app.on_message(filters.command(["dalle"]))
-def getpompt(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+# Set up OpenAI API
+openai.api_key = "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"
 
-	# getting prompt from the text
-	try:
-		prompt = message.text.split("/dalle ")[1]
-	except:
-		app.send_message(message.chat.id,'Send Prompt with Command,\nUssage : "/dalle high defination studio image of pokemon"')
-		return	
+# Set up Telegram bot
+bot = telegram.Bot(token="6371414039:AAFUvQJR7UcyVa2ox-nZv_YDGhNmgdYPmTE")
+updater = Updater(bot=bot, use_context=True)
+dispatcher = updater.dispatcher
 
-	# threding	
-	app.send_message(message.chat.id,"Prompt received and Request is sent. Waiting time is 2-3 mins")
-	ai = threading.Thread(target=lambda:genrateimages(message,prompt),daemon=True)
-	ai.start()
+#When /start send Hello! How can I help you?
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Hello! How can I help you?")
 
-# request data
-reqUrl = "https://backend.craiyon.com/generate"
-headersList = {"authority": "backend.craiyon.com", "accept": "application/json", "accept-language": "en-US,en;q=0.9", "cache-control": "no-cache", "content-type": "application/json", "dnt": "1", "origin": "https://www.craiyon.com", "pragma": "no-cache", "sec-ch-ua-mobile": "?0", "sec-ch-ua-platform": "Linux", "sec-fetch-dest": "empty", "sec-fetch-mode": "cors", "sec-fetch-site": "same-site", "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"}
-#pretext = "data:image/jpeg;base64,"
+#Generate text or code
+def generate_text(update, context):
+    # Get user input
+    prompt = update.message.text
 
-# getting images and uploding
-def genrateimages(message,prompt):
+    # Generate text with OpenAI's GPT-3 model
+    completions = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
 
-	# getting the response
-	import json
+    # Send generated text back to user
+    text = completions.choices[0].text
+    context.bot.send_message(chat_id=update.effective_chat.id, text=text)
 
-payload = json.dumps({"prompt": prompt})
+#Generate image
+def generate_image(update, context):
+    # Get user input
+    prompt = update.message.text
 
-try:
-    response = requests.post(reqUrl, data=payload, headers=headersList)
-    response.raise_for_status()  # Check for HTTP errors
+    # Generate image with OpenAI's DALL-E model
+    url = "https://api.openai.com/v1/images/generations"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {openai.api_key}",
+    }
+    data = {
+        "model": "image-alpha-001",
+        "prompt": prompt,
+        "num_images": 4,
+        "size": "1024x1024",
+        "response_format": "url",
+    }
+    response = requests.post(url, headers=headers, json=data)
 
-    try:
-        json_data = response.json()       
-        os.mkdir(str(message.id))
+    # Send generated image back to user
+    image_url = response.json()["data"][0]["url"]
+    context.bot.send_photo(chat_id=update.effective_chat.id, photo=image_url)
 
-        i = 1
-        for ele in json_data.get("images", []):
-            image = base64.b64decode(ele.replace('\\n', ''))
-            with open(f"{message.id}/{i}.jpeg", "wb") as file:
-                file.write(image)
-            i += 1
+# Set up message handlers
+start_handler = CommandHandler('start', start)
+dalle_handler = CommandHandler("dalle", generate_image)
+text_handler = CommandHandler("chat", generate_text)
+dispatcher.add_handler(start_handler)
+dispatcher.add_handler(dalle_handler)
+dispatcher.add_handler(text_handler)
 
-    except json.JSONDecodeError as e:
-        print(f"JSON decoding error: {e}")
-        
-except requests.exceptions.RequestException as e:
-    print(f"Request error: {e}")
-except Exception as e:
-    print(f"An unexpected error occurred: {e}")
-	
-	# sending images
-	       app.send_media_group(message.chat.id,
-               [
-                InputMediaPhoto(f"{message.id}/1.jpeg", caption=prompt),
-                InputMediaPhoto(f"{message.id}/2.jpeg", caption=prompt),
-                InputMediaPhoto(f"{message.id}/3.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/4.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/5.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/6.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/7.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/8.jpeg", caption=prompt),
-		InputMediaPhoto(f"{message.id}/9.jpeg", caption=prompt)
-                ]
-						)
-
-	# archiving and uploding
-	shutil.make_archive(prompt,"zip",str(message.id))
-	app.send_document(message.chat.id,document=f"{prompt}.zip",caption=f'{prompt}\n\n(Archive for Uncompressed Images)')
-	os.remove(f"{prompt}.zip")
-	shutil.rmtree(str(message.id))
-
-
-# Run the bot
-app.run()
+# Start the bot
+updater.start_polling()
