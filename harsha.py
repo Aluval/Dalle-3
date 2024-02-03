@@ -1,5 +1,5 @@
 #Sᴜɴʀɪsᴇs Hᴀʀsʜᴀ 𝟸𝟺 🇮🇳 ᵀᴱᴸ
-import requests, wget
+import requests
 from pyrogram import Client, filters
 from config import *
 from pyrogram.types import *
