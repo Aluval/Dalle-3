@@ -57,11 +57,11 @@ async def dalle(client, message: Message):
         await message.reply_text(text=err, disable_web_page_preview=True, quote=True)
         return
     try:
-    await generateimages(client, message, query)
+        await generateimages(client, message, query)
 except Exception as e:
     error_message = f"<b>Error encountered while generating Image from DALLE-Mini:</b> {str(e)}"
-    await message.reply_text(text=error_message, disable_web_page_preview=True, quote=True)
-    return
+        await message.reply_text(text=error_message, disable_web_page_preview=True, quote=True)
+        return
 
 
 reqUrl = "https://backend.craiyon.com/generate"
